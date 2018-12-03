@@ -1,6 +1,5 @@
 import axios from './axios'
 import paramsData from './params-wrap'
-import { HOST_PROXY } from './config'
 
 class Api {
   /**
@@ -11,7 +10,7 @@ class Api {
    * @param apiUrl         请求接口地址
    * @param body          对应接口请求的数据
    */
-  getExecute = params => axios.post(HOST_PROXY, params)
+  getExecute = params => axios.post('/proxy/execute', params)
 
   /**
    * 综合评分

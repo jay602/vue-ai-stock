@@ -10,9 +10,7 @@ const resolve = (dir) => path.join(__dirname, dir)
 // 代理对象
 const proxy = {}
 const prefixs = [
-  { path: '/proxy', target: 'http://10.1.5.126:9003' },
-  { path: '/ai', target: 'http://10.1.2.54:9019' },
-  { path: '/mktinfo_api', target: 'http://10.1.2.54:9001' }
+  { path: '/proxy', target: 'http://10.1.5.125:9003' }
 ]
 prefixs.forEach(item => {
   proxy[item.path] = { target: item.target, changeOrigin: true }
