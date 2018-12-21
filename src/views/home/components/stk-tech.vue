@@ -36,37 +36,39 @@ export default {
       switch (type) {
       case 'short':
         this._joinWord('D0020', 'D0028', 'D0036')
-        this._formatTechData('D')
+        this._setData('D')
         break
       case 'middle':
         this._joinWord('D0021', 'D0029', 'D0037')
-        this._formatTechData('W')
+        this._setData('W')
         break
       case 'long':
         this._joinWord('D0022', 'D0030', 'D0038')
-        this._formatTechData('M')
+        this._setData('M')
         break
       }
     },
+    _formatList(list) {
+      list.forEach(item => {
+        item.open = parseFloat(item.open)
+        item.high = parseFloat(item.high)
+        item.low = parseFloat(item.low)
+        item.close = parseFloat(item.close)
+      })
+      return list
+    },
     // 转换技术面分析的数据
-    _formatTechData(key = 'D') {
+    _setData(key = 'D') {
       if (!this.techChart.data[key]) return
       const list = this.techChart.data[key].k_line
-      this.techChart.list = list.map(item => {
-        return {
-          open: parseFloat(item.open),
-          high: parseFloat(item.high),
-          low: parseFloat(item.low),
-          close: parseFloat(item.close),
-          time: item.time
-        }
-      })
+      this.techChart.list = this._formatList(list)
+      // console.log(this.techChart.list)
     },
     // 拼接技术面分析描述
     _joinWord(key1, key2, key3) {
       this.techChart.desc = `${this.words[key1]} 支撑位: ${this.words[key2]}， 阻力位: ${this.words[key3]}`
     },
-    updateInfo() {
+    _fetchData() {
       const { sr_data,
         change_signal,
         performance_information,
@@ -93,11 +95,11 @@ export default {
       if (!sr_data) return false
       this.techChart.data = sr_data.data
       this._joinWord('D0020', 'D0028', 'D0036')
-      this._formatTechData()
+      this._setData()
     }
   },
   created() {
-    this.updateInfo()
+    this._fetchData()
   }
 }
 </script>

@@ -3,10 +3,10 @@
     <div class="tech-chart-tabs">
       <ul class="tabs-box">
         <li class="item"
-              :class="{active:tabIndex===index}"
-              v-for="(item,index) in techTypes"
-              :key="item.type"
-              @click="handleChangeChartClick(item.type,index)">{{item.text}}</li>
+            :class="{active:tabIndex===index}"
+            v-for="(item,index) in techTypes"
+            :key="item.type"
+            @click="handleChangeChartClick(item.type,index)">{{item.text}}</li>
       </ul>
     </div>
     <p class="desc">{{desc}}</p>
@@ -28,15 +28,10 @@
 import {
   Chart,
   ChartWhiteTheme,
-  TimeSeriesDrawer,
-  TimeSeriesVolumeDrawer,
   CandleStickDrawer,
-  // CandleStickVolumeDrawer,
   createYAxisPlugin,
-  // createMAPlugin,
   formateDate
 } from '@gitpad/finance-chart'
-import { parseLargeNumber } from '@/utils/number'
 
 const riseColor = '#f54343' // 涨颜色
 const fallColor = '#1aae52' // 跌颜色
@@ -55,27 +50,9 @@ const chartTypes = [
 
 export default {
   props: {
-    isLineChart: { // 是否是折线图
-      type: Boolean,
-      default: false
-    },
-    lastPrice: { // 昨收价(折线图时必传)
-      type: Number,
-      default: -1
-    },
     desc: {
       type: String,
       default: ''
-    },
-    data: { // 个股信息数据源
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    isBig: {
-      type: Boolean,
-      default: false
     },
     list: { // chart数据列表
       type: Array,
@@ -89,9 +66,7 @@ export default {
       techTypes, // 技术面类型
       chartTypes, // K线类型
       tabIndex: 0, // k线选项卡索引
-      chart: null, // 图表数据实
-      chartNode: null, // chart根节点
-      windowWidth: document.body.clientWidth
+      chart: null // 图表实例
     }
   },
   computed: {
@@ -105,7 +80,7 @@ export default {
   },
   watch: {
     list(v1, v2) {
-      this._chartInit(this.list, 2)
+      this._chartInit(this.list)
     }
   },
   methods: {
@@ -115,87 +90,11 @@ export default {
       type = techTypes[this.tabIndex].type
       this.$emit('changeLine', type)
     },
-    // k线图配置
-    _lineChartOption(data, count) {
-      const _this = this
-      // 如果是大盘，去掉均线
-      if (this.isBig) {
-        data.forEach(item => {
-          delete item.avg
-        })
-      }
-      // 转换成交量
-      const shortenVolume = (v) => {
-        const scaleV = v / 1e2
-        if (scaleV > 1e4) {
-          return `${(scaleV / 1e4).toFixed(2)}万股`
-        }
-        return `${scaleV.toFixed(2)}股`
-      }
-
-      const option = Object.assign({}, this.commonOption, {
-        data,
-        count,
-        lastPrice: this.lastPrice, // 昨收价
-        mainDrawer: {
-          constructor: TimeSeriesDrawer
-        },
-        // TODO(勿删):以是否有成交量的条件来判断是否绘制柱状图
-        // auxiliaryDrawers: this.data.volume !== 0 ? [ // 成交量
-        //   { constructor: TimeSeriesVolumeDrawer }
-        // ] : [],
-        auxiliaryDrawers: [ // 成交量
-          { constructor: TimeSeriesVolumeDrawer }
-        ],
-        tradeTimes: [
-          { open: 90, close: 241 }, // 上午开退市时间
-          { open: 300, close: 483 } // 下午开退市时间
-        ],
-        detailProvider(i) {
-          const current = data[i]
-          const date = new Date()
-          date.setTime(current.time)
-
-          const autoColor = (key) =>
-            current[key] > this.lastPrice
-              ? riseColor
-              : fallColor
-
-          return {
-            tables: [
-              {
-                name: '价格',
-                color: autoColor(current.price),
-                value: current.price.toFixed(2)
-              },
-              _this.isBig
-                ? {}
-                : {
-                  name: '均价',
-                  color: autoColor(current.avg),
-                  value: current.avg
-                },
-              {
-                name: '成交量',
-                color: '#7B7E8D',
-                value: `${shortenVolume(current.volume)}`
-              },
-              {
-                name: '总成交量',
-                color: autoColor(current.amount),
-                value: parseLargeNumber(current.amount)
-              }
-            ]
-          }
-        }
-      })
-      return option
-    },
     // 蜡烛图配置
-    _candleChartOption(data, count) {
+    _candleChartOption(data) {
       const option = Object.assign({}, this.commonOption, {
-        data,
-        count: 40,
+        data: [],
+        count: 50,
         mainDrawer: {
           constructor: CandleStickDrawer,
           options: {
@@ -204,7 +103,7 @@ export default {
             ]
           }
         },
-        detailProvider(i) {
+        detailProvider(i, data) {
           const current = data[i]
           const date = new Date(current.time.replace(/-/g, '/'))
           const WEEK_DAY_MAP = { 0: '周日', 1: '周一', 2: '周二', 3: '周三', 4: '周四', 5: '周五', 6: '周六' }
@@ -221,36 +120,34 @@ export default {
               {
                 name: '收盘',
                 color: autoColor('close'),
-                value: current.close
+                value: current.close.toFixed(2)
               },
               {
                 name: '开盘',
                 color: autoColor('open'),
-                value: current.open
+                value: current.open.toFixed(2)
               },
               {
                 name: '最高',
                 color: autoColor('high'),
-                value: current.high
+                value: current.high.toFixed(2)
               },
               {
                 color: autoColor('low'),
                 name: '最低',
-                value: current.low
+                value: current.low.toFixed(2)
               }
             ]
           }
         }
       })
-      return option
-    },
-    // 初始化Chart
-    _chartInit(data, count) {
-      this._chartDestroyed()
-      const option = this._candleChartOption(data, count)
-
       this.chart = new Chart(option)
       this.chart.setData(data)
+    },
+    // 初始化Chart
+    _chartInit() {
+      this._chartDestroyed()
+      this._candleChartOption(this.list)
     },
     // 注销图表
     _chartDestroyed() {
@@ -260,7 +157,7 @@ export default {
     }
   },
   mounted() {
-    this._chartInit(this.list, 2)
+    this._chartInit()
   },
   destroyed() {
     this._chartDestroyed()

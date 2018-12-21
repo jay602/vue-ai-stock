@@ -62,4 +62,5 @@ export default {
   margin-bottom -6px
   font-size 30px
   color #333
+  font-weight bold
 </style>

@@ -25,6 +25,7 @@ F2.Chart.plugins.register(Animation); // 注册插件 Animation
 
 // 关闭 F2 的体验改进计划打点请求
 F2.track(false)
+F2.Global.shape.line.lineWidth = 1
 
 // 十大买入卖出经纪商 格式化数字
 function numberToMoney(n, isPositive) {
@@ -47,7 +48,7 @@ const RISE_COLOR = '#f54343' // 上涨
 const FALL_COLOR = '#1aae52' // 下跌
 const TREND_COLORS = [FALL_COLOR, FAIR_COLOR, RISE_COLOR]
 
-const RATIO_COLOR = '#fd794b'
+const RATIO_COLOR = '#ff8d1e'
 const CLOSE_COLOR = '#8391b4'
 
 export default {
@@ -114,8 +115,8 @@ export default {
         html += `<p class="tips-title">${time} ${week}</p>`;
 
         html += '<ul>';
-        html += `<li><span>开盘价</span><span>${open}</span></li>`;
-        html += `<li><span>收盘价</span><span style="color: ${TREND_COLORS[trendClose]};">${close}</span></li>`;
+        html += `<li><span>开盘价</span><span>${open.toFixed(2)}</span></li>`;
+        html += `<li><span>收盘价</span><span style="color: ${TREND_COLORS[trendClose]};">${close.toFixed(2)}</span></li>`;
         html += `<li><span>涨跌幅</span><span style="color: ${TREND_COLORS[trend]};">${upDownScope}%</span></li>`;
 
         items.forEach((currentData, ind) => {
@@ -149,6 +150,7 @@ export default {
     })
 
     chart.axis('date', {
+      line: null,
       label: function label(text, index, total) {
         var textCfg = {}
         if (index === 0) {
@@ -195,24 +197,34 @@ export default {
     var chart = new F2.Chart({
       el,
       pixelRatio: window.devicePixelRatio,
-      padding: [15, 30, 'auto', 'auto']
+      padding: [15, 30, 'auto', 120]
     })
     chart.source(data)
     chart.coord({
       transposed: true
     })
     chart.scale('value', {
-      range: [0, 0.6]
+      range: [0, 0.5]
     });
+
     chart.legend(false);
     chart.tooltip(false);
+
     chart.axis('name', {
+      labelOffset: 106,
       label: function label(text, index, total) {
         var textCfg = {}
-        textCfg.textAlign = 'end'
-        textCfg.fontSize = '12'
-        if (text.length > 5) {
-          textCfg.text = text.substr(0, 5) + '...'
+        textCfg.textAlign = 'left'
+        textCfg.fontSize = '13'
+
+        if (text.length > 6) {
+          // 区分中英文，截取显示宽度
+          var reg = /[\u4e00-\u9fa5]+/g;
+          if (reg.test(text)) {
+            textCfg.text = text.substr(0, 6) + '...'
+          } else {
+            textCfg.text = text.substr(0, 9) + '...'
+          }
         } else {
           textCfg.text = text
         }
@@ -256,7 +268,7 @@ export default {
    * 资金趋势 -- 面积
    */
   renderMoneyArea: options => {
-    const { el, data = [], charge = [], min = 0, max, color = '#ec5a28', countY = 4 } = options
+    const { el, data = [], charge = [], min = 0, max, color = '#fc571e', countY = 4 } = options
 
     const changeData = data.map(item => {
       const { name } = item
@@ -336,8 +348,8 @@ export default {
       value: {
         ticks,
         formatter: function formatter(val) {
-          var temp = (val / 1000).toFixed(2)
-          var res = temp > 0 ? temp + 'M' : val.toFixed(2)
+          var temp = (val / 100).toFixed(2)
+          var res = Math.abs(temp) > 0 ? temp + 'M' : val.toFixed(2)
           return res
         }
       }
@@ -411,9 +423,6 @@ export default {
       .line()
       .position('time*value')
       .color('value', color)
-      .style({
-        lineWidth: 1
-      })
     chart.render()
 
     return chart
@@ -810,8 +819,8 @@ export default {
         html += `<li><span>卖空比例</span><span>${shortSellingStockSumRatio}%</span></li>`;
         html += `<li><span>卖空股数</span><span>${(shortSellingStockSum / 10000).toFixed(2)}万股</span></li>`;
         html += `<li><span>成交股数</span><span>${(volume / 10000).toFixed(2)}万股</span></li>`;
-        html += `<li><span>开盘价</span><span>${open}</span></li>`;
-        html += `<li><span>收盘价</span><span style="color: ${TREND_COLORS[trendClose]};">${close}</span></li>`;
+        html += `<li><span>开盘价</span><span>${open.toFixed(2)}</span></li>`;
+        html += `<li><span>收盘价</span><span style="color: ${TREND_COLORS[trendClose]};">${close.toFixed(2)}</span></li>`;
         html += `<li><span>涨跌幅</span><span style="color: ${TREND_COLORS[trend]};">${upDownScope}%</span></li>`;
         html += '</ul>';
 
@@ -837,6 +846,7 @@ export default {
       }
     });
     chart.axis('date', {
+      line: null,
       label: function label(text, index, total) {
         var textCfg = {}
         if (index === 0) {
@@ -895,7 +905,6 @@ export default {
       itemWidth: null,
       position: 'bottom',
       align: 'center',
-      offsetX: 0,
       items: [
         {
           name: '比例',
@@ -922,12 +931,12 @@ export default {
           fill: CLOSE_COLOR
         },
         {
-          name: '卖空股数(涨)',
+          name: '净买入股数(涨)',
           marker: 'square',
           fill: RISE_COLOR
         },
         {
-          name: '卖空股数(跌)',
+          name: '净买入股数(跌)',
           marker: 'square',
           fill: FALL_COLOR
         }

@@ -30,6 +30,7 @@ $title-color = #333333
     line-height 1
     font-size 26px
     color $title-color
+    font-weight bold
     letter-spacing 1px
     border-left  4px solid $title-border-left
     padding-left 24px

@@ -1,5 +1,4 @@
 
-<script>
 export default {
   methods: {
     // 响应窗口重绘图表 ==> 侦测屏幕宽
@@ -30,4 +29,3 @@ export default {
     }
   }
 }
-</script>

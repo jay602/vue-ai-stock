@@ -173,13 +173,13 @@ export default {
 
       // 获取 总流入 - 总流出
       this.stk_money_flow_total = Object.values(STK_MONEY_FLOW_TOTAL).map(item => {
-        const value = res[item.key]
+        const value = res[item.key].toFixed(2)
         return { ...item, value }
       })
 
       // 概览
       const { totalIn, totalOut } = res
-      this.desc = `最近一个交易日内流入 ${totalIn}万元，流出 ${totalOut}万元。`
+      this.desc = `最近一个交易日内流入 ${totalIn.toFixed(2)}万元，流出 ${totalOut.toFixed(2)}万元。`
 
       // 调用绘制函数
       this.$nextTick(() => {

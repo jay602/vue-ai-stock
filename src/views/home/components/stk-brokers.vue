@@ -12,23 +12,26 @@
           <ul class="chart-custom-legend">
             <li class="legend-item"
                 v-for="(val, ind) in legends"
-                :key="ind"
-                @click="handleChangeLine(val, ind)">
-                <template v-if="val.checked">
-                  <span class="item-mark" :style="`border-color: ${val.color}`">
-                    <i class="tick" :style="`border-color: ${val.color}`"></i>
-                  </span>
-                </template>
-                <template v-else>
-                  <span class="item-mark"></span>
-                </template>
-                <span class="item-text">{{brokers[ind].brokerName}}</span>
+                :key="ind">
+                <div @click="handleChangeLine(val, ind)">
+                  <template v-if="val.checked">
+                    <span class="item-mark" :style="`border-color: ${val.color}`">
+                      <i class="tick" :style="`border-color: ${val.color}`"></i>
+                    </span>
+                  </template>
+                  <template v-else>
+                    <span class="item-mark"></span>
+                  </template>
+                  <span class="item-text">{{brokers[ind].brokerName}}</span>
+                </div>
             </li>
           </ul>
         </div>
       </jf-chart>
       <jf-chart title="十大净买入/卖出经纪商" :border="true" :chart-data="stk_brokers_net_data">
         <div class="stk-chart-desc">
+          <!-- 去除图表示例公式 -->
+          <!-- <img class="broker-desc-icon" src="../../../common/images/broker_top_10_desc_icon.png"> -->
           <p>净买入量=当前交易日持股量-上一交易日持股量，</p>
           <p>净卖出量=上一交易日持股量-当前交易日持股量。</p>
         </div>
@@ -284,6 +287,11 @@ export default {
     padding-left 22px
     padding-top 28px
 
+.broker-desc-icon
+  width 52%
+  display block
+  margin-bottom 20px
+
 .chart-line,.chart-bar
   position relative
 
@@ -331,13 +339,14 @@ export default {
 .stk-chart
   &-tips
     margin-top 38px
-    font-size 24px
-    padding 0 22px
+    font-size 20px
+    padding 0 20px
     overflow hidden
+    color #999
     & > *
       &:first-child
         float left
-        width 76%
+        width 80%
         no-wrap()
       &:last-child
         text-align right
@@ -346,35 +355,36 @@ export default {
 .chart-custom-legend
   overflow hidden
   padding 0 22px
+  position relative
+  z-index 10
   .legend-item
     float left
     width 32%
     margin-right 2%
     margin-bottom 20px
-    line-height 1.5
-    font-size 26px
-    no-wrap()
+    font-size 20px
     &:nth-child(3n)
       margin-right 0
   .item-mark
     float left
-    width 28px
-    height 28px
-    display block
+    width 24px
+    height 24px
     margin-right 9px
-    border 3px solid #ddd
+    border 2px solid #ddd
     position relative
     .tick
       width 6px
       height 10px
-      border-right 3px solid #ddd
-      border-bottom 3px solid #ddd
+      border-right 2px solid #ddd
+      border-bottom 2px solid #ddd
       position absolute
       left 50%
       top 40%
       transform translate(-50%, -50%) rotate(45deg)
   .item-text
-    overflow hidden
+    no-wrap()
+    display block
+    line-height 1.4
 
 .tech-tabs
   text-align center

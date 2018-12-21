@@ -49,6 +49,7 @@ export default {
   .chart-title
     font-size 26px
     color #333
+    font-weight bold
     padding-left 22px
     padding-bottom 22px
     &.border
