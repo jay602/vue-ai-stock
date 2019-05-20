@@ -10,7 +10,7 @@ class Api {
    * @param apiUrl         请求接口地址
    * @param body          对应接口请求的数据
    */
-  getExecute = params => axios.post('/proxy/execute', params)
+  getExecute = params => axios.post('/api/proxy/execute', params)
 
   /**
    * 综合评分
@@ -19,7 +19,7 @@ class Api {
    * "stock":"02318.HK.GG"
    */
   getStockData = params => {
-    const apiUrl = '/ai/getStockData'
+    const apiUrl = '/api/ai/getStockData'
     const serviceHost = 'ai-api-host'
     const data = Object.assign({}, { apiUrl, serviceHost }, params)
     return this.getExecute(paramsData.PROXY(data))
@@ -34,7 +34,7 @@ class Api {
    * "sessionId": "5b73c588fec84b10a995111752168a3043005"
    */
   getStkMoneyFlow = params => {
-    const apiUrl = '/mktinfo_api/fetch_stk_money_flow'
+    const apiUrl = '/api/api/mktinfo_api/fetch_stk_money_flow'
     const serviceHost = 'mktinfo-api-host'
     const data = Object.assign({}, { apiUrl, serviceHost }, paramsData.WRAP(params))
     return this.getExecute(paramsData.PROXY(data))
@@ -49,7 +49,7 @@ class Api {
    * "sessionId": "5b73c588fec84b10a995111752168a3043005"
    */
   getStkMoneyFlowTrend = params => {
-    const apiUrl = '/mktinfo_api/fetch_stk_money_flow_trend'
+    const apiUrl = '/api/mktinfo_api/fetch_stk_money_flow_trend'
     const serviceHost = 'mktinfo-api-host'
     const data = Object.assign({}, { apiUrl, serviceHost }, paramsData.WRAP(params))
     return this.getExecute(paramsData.PROXY(data))
@@ -64,7 +64,7 @@ class Api {
    * "date":1521849600000
    */
   getShortSelling = params => {
-    const apiUrl = '/mktinfo_api/shortSelling'
+    const apiUrl = '/api/mktinfo_api/shortSelling'
     const serviceHost = 'mktinfo-api-host'
     const data = Object.assign({}, { apiUrl, serviceHost }, paramsData.WRAP(params))
     return this.getExecute(paramsData.PROXY(data))
@@ -79,7 +79,7 @@ class Api {
    * "date":1521849600000
    */
   getHoldHKStock = params => {
-    const apiUrl = '/mktinfo_api/holdHKStock'
+    const apiUrl = '/api/mktinfo_api/holdHKStock'
     const serviceHost = 'mktinfo-api-host'
     const data = Object.assign({}, { apiUrl, serviceHost }, paramsData.WRAP(params))
     return this.getExecute(paramsData.PROXY(data))
@@ -94,7 +94,7 @@ class Api {
    * "date":1521331200000
    */
   getBrokersHoldStock = params => {
-    const apiUrl = '/mktinfo_api/brokersHoldStock'
+    const apiUrl = '/api/mktinfo_api/brokersHoldStock'
     const serviceHost = 'mktinfo-api-host'
     const data = Object.assign({}, { apiUrl, serviceHost }, paramsData.WRAP(params))
     return this.getExecute(paramsData.PROXY(data))
@@ -111,7 +111,7 @@ class Api {
    * "buyOrSaleStatus": "1"
    */
   getNetBuyOrSaleBrokers = params => {
-    const apiUrl = '/mktinfo_api/netBuyOrSaleBrokers'
+    const apiUrl = '/api/mktinfo_api/netBuyOrSaleBrokers'
     const serviceHost = 'mktinfo-api-host'
     const data = Object.assign({}, { apiUrl, serviceHost }, paramsData.WRAP(params))
     return this.getExecute(paramsData.PROXY(data))
@@ -128,7 +128,7 @@ class Api {
    * "sessionUserId": "10098"
    */
   getStkIndex = params => {
-    const apiUrl = '/mktinfo_api/fetch_stk_index'
+    const apiUrl = '/api/mktinfo_api/fetch_stk_index'
     const serviceHost = 'mktinfo-api-host'
     const data = Object.assign({}, { apiUrl, serviceHost }, paramsData.WRAP(params))
     return this.getExecute(paramsData.PROXY(data))

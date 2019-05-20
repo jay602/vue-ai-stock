@@ -8,26 +8,26 @@
     </template>
     <template v-else>
       <!-- 头部 -->
-      <home-header></home-header>
-        <!-- 股票简介 -->
-        <stk-abstract :obj="stock_evaluation" :info="stock_info"></stk-abstract>
-        <!-- 相关概念 -->
-        <stk-concept :obj="stock_concept"></stk-concept>
-        <!-- 技术面分析 -->
-        <stk-tech :obj="stock_data"></stk-tech>
-        <!-- 技术面信号 -->
-        <stk-signal :obj="technical_information"></stk-signal>
-        <!-- 基本面分析 -->
-        <stk-fundament :obj="performance_information" :info="stock_info"></stk-fundament>
-        <!-- 资金流向分析 -->
-        <stk-money :asset-id="assetId" :info="stock_info"></stk-money>
-        <!-- 经纪商分析 -->
-        <stk-brokers :asset-id="assetId"></stk-brokers>
-        <!-- 卖空分析 -->
-        <stk-selling :asset-id="assetId"></stk-selling>
+      <home-header v-if="isBenBen"></home-header>
+      <!-- 股票简介 -->
+      <stk-abstract :obj="stock_evaluation" :info="stock_info"></stk-abstract>
+      <!-- 相关概念 -->
+      <stk-concept :obj="stock_concept"></stk-concept>
+      <!-- 技术面分析 -->
+      <stk-tech :obj="stock_data"></stk-tech>
+      <!-- 技术面信号 -->
+      <stk-signal :obj="technical_information"></stk-signal>
+      <!-- 基本面分析 -->
+      <stk-fundament :obj="performance_information" :info="stock_info"></stk-fundament>
+      <!-- 资金流向分析 -->
+      <stk-money :asset-id="assetId" :info="stock_info"></stk-money>
+      <!-- 经纪商分析 -->
+      <stk-brokers :asset-id="assetId"></stk-brokers>
+      <!-- 卖空分析 -->
+      <stk-selling :asset-id="assetId"></stk-selling>
 
       <!-- 页脚 -->
-      <home-footer></home-footer>
+      <home-footer :appName="appName"></home-footer>
     </template>
   </div>
 </template>
@@ -35,6 +35,9 @@
 <script type="text/ecmascript-6">
 import { getURLParameters } from '@/utils/url'
 import { StkAbstract, StkConcept, StkTech, StkSignal, StkFundament, StkMoney, StkBrokers, StkSelling, HomeHeader, HomeFooter } from './components'
+import { getMobileInfo } from '../../native-app/native-api'
+
+const APP_STOCK = '玖富股票'
 
 const STK_INFO_KEY = [
   { key: 'D0001', text: 'num' },
@@ -45,6 +48,8 @@ const STK_INFO_KEY = [
 export default {
   data() {
     return {
+      isBenBen: true, // 是否玖富犇犇
+      appName: '玖富犇犇', // 当前APP名称
       requestMax: 2, // 限定请求AI数据2次，防止第一次请求数据为空情况
       requestInd: 0, // 默认第一次
       isError: false, // 请求AI数据返回状态
@@ -65,6 +70,19 @@ export default {
     }
   },
   methods: {
+    // 判断当前APP是否玖富犇犇
+    fetchMobileInfo() {
+      const self = this
+      getMobileInfo({
+        success: (res) => {
+          const { displayName } = JSON.parse(res.data)
+          if (displayName && displayName === APP_STOCK) {
+            self.isBenBen = false
+            self.appName = APP_STOCK
+          }
+        }
+      })
+    },
     // 按钮点击重试
     handleRequest() {
       // 限制只触发一次
@@ -114,6 +132,7 @@ export default {
   },
   created() {
     this._fetchData()
+    this.fetchMobileInfo()
   },
   components: {
     StkAbstract,

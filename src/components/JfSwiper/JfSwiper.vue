@@ -2,9 +2,9 @@
   <swiper class="jf-swiper" :options="swiperOption" ref="mySwiper">
     <!-- slides -->
     <swiper-slide v-for="(item, index) in swiperSlides" :key="index">
-      <a :href="item.linkUrl? item.linkUrl : 'javascript:;'" target="_blank">
+      <div @click="handleItemClick(item)">
         <img :src="item.picUrl">
-      </a>
+      </div>
     </swiper-slide>
     <!-- Optional controls -->
     <template v-if="this.swiperSlides.length > 1">
@@ -56,6 +56,9 @@ export default {
       if (this.swiperSlides.length < 2) {
         this.swiper.destroy(false)
       }
+    },
+    handleItemClick(item) {
+      this.$emit('itemClick', item)
     }
   },
   mounted() {

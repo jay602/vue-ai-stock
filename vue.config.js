@@ -20,7 +20,7 @@ module.exports = {
   // 部署应用包时的基本 URL
   baseUrl: './',
   // 生产环境构建文件的目录
-  outputDir: 'ai-stock-page',
+  outputDir: 'dist',
   // 生成的静态资源 - 相对于 outputDir 的 目录
   assetsDir: './static',
   // 生成的 index.html 的输出路径 - 相对于 outputDir 的 目录
