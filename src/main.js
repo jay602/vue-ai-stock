@@ -2,7 +2,6 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from '@/router'
 
-// import VConsole from 'vconsole'
 import lodash from 'lodash-es'
 
 import fastclick from 'fastclick'
@@ -42,11 +41,12 @@ Vue.prototype.$lodash = lodash
 
 fastclick.attach(document.body)
 
-// 开发环境开启vConsole
-// if (process.env.NODE_ENV === 'production') {
-//   const vConsole = new VConsole()
-//   console.log(vConsole.version)
-// }
+// 测试环境开启 vConsole
+if (process.env.VUE_APP_CONSOLE === 'show') {
+  const VConsole = require('vconsole')
+  const vConsole = new VConsole()
+  console.log(vConsole.version)
+}
 
 new Vue({
   router,

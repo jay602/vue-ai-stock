@@ -16,7 +16,7 @@ export const currentURL = () => window.location.href
  * Example: getURLParameters('http://url.com/page?name=Adam&surname=Smith') -> {name: 'Adam', surname: 'Smith'}
  */
 export const getURLParameters = (url = currentURL()) => {
-  const params = url.match(/([^?=&]+)(=([^(&|#)]*))/g)
+  const params = url.match(/([^?=&]+)(=([^(&|#|/)]*))/g)
   if (params === null) {
     return {}
   } else {

@@ -12,6 +12,10 @@ const routes = [
     path: '/list',
     name: 'list',
     component: _import('list')
+  },
+  {
+    path: '*',
+    redirect: '/'
   }
 ]
 
