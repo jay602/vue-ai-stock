@@ -34,7 +34,7 @@ class Api {
    * "sessionId": "5b73c588fec84b10a995111752168a3043005"
    */
   getStkMoneyFlow = params => {
-    const apiUrl = '/api/api/mktinfo_api/fetch_stk_money_flow'
+    const apiUrl = '/api/mktinfo_api/fetch_stk_money_flow'
     const serviceHost = 'mktinfo-api-host'
     const data = Object.assign({}, { apiUrl, serviceHost }, paramsData.WRAP(params))
     return this.getExecute(paramsData.PROXY(data))
